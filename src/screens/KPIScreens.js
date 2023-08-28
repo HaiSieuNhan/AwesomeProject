@@ -1,9 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { WebView } from 'react-native-webview';
 
 export default function KPIScreen() {
-  return (
-    <View >
-      <Text>KPI View</Text>
-    </View>
-  );
+    return <WebView source={{ uri: 'https://kpi.sunhouse.com.vn/' }} style={{ flex: 1 }} />;
 }
