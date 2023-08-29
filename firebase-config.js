@@ -1,4 +1,4 @@
-import { FIRE_BASE_API_KEY, FIRE_BASE_STORAGE_BUCKET, FIRE_BASE_APP_ID } from "@env"
+import { FIRE_BASE_API_KEY, FIRE_BASE_STORAGE_BUCKET, FIRE_BASE_APP_ID, FIRE_BASE_PROJECT_ID, FIRE_BASE_AUTH_DOMAIN } from "@env"
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
@@ -7,6 +7,8 @@ const firebaseConfig = {
   apiKey: FIRE_BASE_API_KEY,
   storageBucket: FIRE_BASE_STORAGE_BUCKET,
   appId: FIRE_BASE_APP_ID,
+  projectId: FIRE_BASE_PROJECT_ID,
+  authDomain: FIRE_BASE_AUTH_DOMAIN,
 };
 
 if (getApps().length === 0) {
