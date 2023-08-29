@@ -1,31 +1,62 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { StatusBar } from 'expo-status-bar';
+import { uploadToFirebase } from '../../firebase-config';
 export default function CameraScreens() {
 
   const [permission, requestPermission] = ImagePicker.useCameraPermissions();
 
-if (permission?.status !== ImagePicker.PermissionStatus.GRANTED){
-  return (
-    <View style={styles.container}>
-      <Text>Permission Not granted - {permission?.status}</Text>
-      <StatusBar style="auto" />
-      <Button title  = "Request Permission" onPress = {requestPermission}></Button>
-    </View>
-  );
-}
+  const takePhoto = async () => {
+    try {
+      const cameraResp = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        quality: 1,
+      });
+
+      if (!cameraResp.canceled) {
+        const { uri } = cameraResp.assets[0];
+        const fileName = uri.split("/").pop();
+        const uploadResp = await uploadToFirebase(uri, fileName, (v) =>
+          console.log(v)
+        );
+        console.log(uploadResp);
+
+        // listFiles().then((listResp) => {
+        //   const files = listResp.map((value) => {
+        //     return { name: value.fullPath };
+        //   });
+
+        //   setFiles(files);
+        // });
+      }
+    } catch (e) {
+      Alert.alert("Error Uploading Image " + e.message);
+    }
+  };
+
+  ///Permission
+  if (permission?.status !== ImagePicker.PermissionStatus.GRANTED) {
+    return (
+      <View style={styles.container}>
+        <Text>Permission Not granted - {permission?.status}</Text>
+        <StatusBar style="auto" />
+        <Button title="Request Permission" onPress={requestPermission}></Button>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <Text>Working with firebase and Image Picker</Text>
       <StatusBar style="auto" />
-      <Button title  = "Take Picture" onPress = {requestPermission}></Button>
+      <Button title="Take Picture" onPress={takePhoto}></Button>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     flex: 1,
     backgroundColor: "fff",
     alignItems: "center",
