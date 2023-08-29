@@ -1,6 +1,7 @@
 import { FIRE_BASE_API_KEY, FIRE_BASE_STORAGE_BUCKET, FIRE_BASE_APP_ID, FIRE_BASE_PROJECT_ID, FIRE_BASE_AUTH_DOMAIN } from "@env"
+import { async } from "@firebase/util";
 import { initializeApp, getApp, getApps } from 'firebase/app';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL,listAll } from "firebase/storage";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -17,6 +18,19 @@ if (getApps().length === 0) {
 
 const fbApp = getApp();
 const fbStorage = getStorage();
+
+const listFiles = async () =>{
+
+const storage = getStorage();
+
+// Create a reference under which you want to list
+const listRef = ref(storage, 'images');
+
+// Find all the prefixes and items.
+const listResp = await listAll(listRef);
+return listResp.items
+
+};
 
 
 const uploadToFirebase = async (uri, name, onProgress) => {
@@ -51,7 +65,7 @@ const uploadToFirebase = async (uri, name, onProgress) => {
   });
 };
 
-export { fbApp, fbStorage, uploadToFirebase };
+export { fbApp, fbStorage, uploadToFirebase,listFiles };
 
 // For more information on how to access Firebase in your project,
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase

@@ -1,10 +1,33 @@
-import { StyleSheet, Text, View, Button, Alert } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { StatusBar } from 'expo-status-bar';
-import { uploadToFirebase } from '../../firebase-config';
-export default function CameraScreens() {
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Alert,
+} from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
+import { listFiles, uploadToFirebase } from "../../firebase-config";
+import { useState, useEffect } from "react";
+import MyFilesList from "../../MyList";
+import MyFilesListV2 from "./MyFilesListV2";
 
+export default function CameraScreens() {
   const [permission, requestPermission] = ImagePicker.useCameraPermissions();
+  const [files, setFiles] = useState([]);
+
+  useEffect(() => {
+    listFiles().then((listResp) => {
+      const files = listResp.map((value) => {
+        return { name: value.fullPath };
+      });
+
+      setFiles(files);
+    });
+  }, []);
+
+  console.log(files);
 
   const takePhoto = async () => {
     try {
@@ -22,13 +45,13 @@ export default function CameraScreens() {
         );
         console.log(uploadResp);
 
-        // listFiles().then((listResp) => {
-        //   const files = listResp.map((value) => {
-        //     return { name: value.fullPath };
-        //   });
+        listFiles().then((listResp) => {
+          const files = listResp.map((value) => {
+            return { name: value.fullPath };
+          });
 
-        //   setFiles(files);
-        // });
+          setFiles(files);
+        });
       }
     } catch (e) {
       Alert.alert("Error Uploading Image " + e.message);
@@ -47,11 +70,15 @@ export default function CameraScreens() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text>Upload IMG to FireBase</Text>
-      <StatusBar style="auto" />
-      <Button title="Camera" onPress={takePhoto}></Button>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        {/* <Text>Upload IMG to FireBase</Text> */}
+        <MyFilesList files={files} />
+        {/* <MyFilesListV2 /> */}
+        <StatusBar style="auto" />
+        <Button title="Camera" onPress={takePhoto}></Button>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -59,7 +86,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "fff",
-    alignItems: "center",
-    justifyContent: "center",
-  }
+  },
 });
