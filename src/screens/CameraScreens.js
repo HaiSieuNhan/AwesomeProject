@@ -48,9 +48,9 @@ export default function CameraScreens() {
 
   return (
     <View style={styles.container}>
-      <Text>Working with firebase and Image Picker</Text>
+      <Text>Upload IMG to FireBase</Text>
       <StatusBar style="auto" />
-      <Button title="Take Picture" onPress={takePhoto}></Button>
+      <Button title="Camera" onPress={takePhoto}></Button>
     </View>
   );
 }
