@@ -74,7 +74,6 @@ export default function CameraScreens() {
       <View style={styles.container}>
         {/* <Text>Upload IMG to FireBase</Text> */}
         <MyFilesList files={files} />
-        {/* <MyFilesListV2 /> */}
         <StatusBar style="auto" />
         <Button title="Camera" onPress={takePhoto}></Button>
       </View>
