@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
-import { listFiles, uploadToFirebase } from "../../firebase-config";
+import { listFiles, uploadToFirebase,fbStorage,listAll,ref,getDownloadURL } from "../../firebase-config";
 import { useState, useEffect } from "react";
 import MyFilesList from "../../MyList";
 import MyFilesListV2 from "./MyFilesListV2";
@@ -16,18 +16,34 @@ import MyFilesListV2 from "./MyFilesListV2";
 export default function CameraScreens() {
   const [permission, requestPermission] = ImagePicker.useCameraPermissions();
   const [files, setFiles] = useState([]);
+   const [imageUrls, setImageUrls] = useState([]);
+
+  // useEffect(() => {
+  //   listFiles().then((listResp) => {
+  //     const files = listResp.map((value) => {
+  //       return { name: value.fullPath };
+  //     });
+  //     setFiles(files);
+  //   });
+  // }, []);
+
 
   useEffect(() => {
-    listFiles().then((listResp) => {
-      const files = listResp.map((value) => {
-        return { name: value.fullPath };
-      });
+    // Lấy danh sách các ảnh từ Firebase Storage
+    async function fetchImageUrls() {
+      const imageRefs = await listAll(ref(fbStorage, 'images'));
+      console.log(imageRefs);
+      const urls = await Promise.all(
+        imageRefs.items.map(async (itemRef) => {
+          const url = await getDownloadURL(itemRef);
+          return url;
+        })
+      );
+      setImageUrls(urls);
+    }
 
-      setFiles(files);
-    });
+    fetchImageUrls();
   }, []);
-
-  console.log(files);
 
   const takePhoto = async () => {
     try {
@@ -43,7 +59,6 @@ export default function CameraScreens() {
         const uploadResp = await uploadToFirebase(uri, fileName, (v) =>
           console.log(v)
         );
-        console.log(uploadResp);
 
         listFiles().then((listResp) => {
           const files = listResp.map((value) => {
@@ -73,7 +88,8 @@ export default function CameraScreens() {
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         {/* <Text>Upload IMG to FireBase</Text> */}
-        <MyFilesList files={files} />
+        {/* <MyFilesList files={files} /> */}
+        <MyFilesListV2 imageUrls={imageUrls} />
         <StatusBar style="auto" />
         <Button title="Camera" onPress={takePhoto}></Button>
       </View>

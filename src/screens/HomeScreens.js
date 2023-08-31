@@ -11,32 +11,32 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="KPI" 
-      component={KPIScreen}
-      options={{
-        tabBarIcon: () => <Text>😀</Text>
-      }}
+      <Tab.Screen name="KPI"
+        component={KPIScreen}
+        options={{
+          tabBarIcon: () => <Text>😀</Text>
+        }}
       />
-      <Tab.Screen 
-      name="KD" 
-      component={KDScreen} 
-      options={{
-        tabBarIcon: () => <Text>😅</Text>
-      }}
+      <Tab.Screen
+        name="Camera"
+        component={CameraScreens}
+        options={{
+          tabBarIcon: () => <Text>🙃</Text>
+        }} />
+      <Tab.Screen
+        name="Upload IMG"
+        component={KDScreen}
+        options={{
+          tabBarIcon: () => <Text>😅</Text>
+        }}
       />
-      <Tab.Screen 
-      name="QC" 
-      component={QCScreen}
-            options={{
-                tabBarIcon: () => <Text>😗</Text>
-              }}
+      <Tab.Screen
+        name="Location"
+        component={QCScreen}
+        options={{
+          tabBarIcon: () => <Text>😗</Text>
+        }}
       />
-      <Tab.Screen 
-      name="Camera" 
-      component={CameraScreens} 
-      options={{
-        tabBarIcon: () => <Text>🙃</Text>
-      }}/>
     </Tab.Navigator>
   );
 }

@@ -1,8 +1,7 @@
 import { FIRE_BASE_API_KEY, FIRE_BASE_STORAGE_BUCKET, FIRE_BASE_APP_ID, FIRE_BASE_PROJECT_ID, FIRE_BASE_AUTH_DOMAIN } from "@env"
-import { async } from "@firebase/util";
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL,listAll } from "firebase/storage";
-
+import { Alert} from 'react-native';
 // Initialize Firebase
 const firebaseConfig = {
   apiKey: FIRE_BASE_API_KEY,
@@ -11,6 +10,7 @@ const firebaseConfig = {
   projectId: FIRE_BASE_PROJECT_ID,
   authDomain: FIRE_BASE_AUTH_DOMAIN,
 };
+
 
 if (getApps().length === 0) {
   initializeApp(firebaseConfig);
@@ -48,6 +48,10 @@ const uploadToFirebase = async (uri, name, onProgress) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         onProgress && onProgress(progress);
+
+        if(progress == 100) {
+          Alert.alert('Uploading Img Successfully');
+        }
       },
       (error) => {
         // Handle unsuccessful uploads
@@ -65,7 +69,7 @@ const uploadToFirebase = async (uri, name, onProgress) => {
   });
 };
 
-export { fbApp, fbStorage, uploadToFirebase,listFiles };
+export { fbApp, fbStorage, uploadToFirebase,listFiles,getStorage,listAll,ref,getDownloadURL };
 
 // For more information on how to access Firebase in your project,
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
