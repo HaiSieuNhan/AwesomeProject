@@ -1,15 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Button,
-  FlatList,
-  SafeAreaView,
-  Text,
-  View,
-  Image,
-  Avatar
-} from 'react-native';
-import { ListItem, Divider } from 'react-native-elements';
+import { StyleSheet, FlatList, View, Image } from "react-native";
+
+import { ListItem, Avatar,List } from "@react-native-material/core";
 
 function ImageList({ imageUrls }) {
   return (
@@ -19,7 +10,7 @@ function ImageList({ imageUrls }) {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <Image
-            style={{ width: 200, height: 200 }}
+            style={{ width: 400, height: 400, margin: 10 }}
             source={{ uri: item }}
           />
         )}
@@ -28,33 +19,34 @@ function ImageList({ imageUrls }) {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   listItem: {
     marginTop: 8,
-    marginBottom: 8
+    marginBottom: 8,
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   titleStyle: {
-    fontSize: 30
+    fontSize: 30,
   },
   subtitleStyle: {
-    fontSize: 18
+    fontSize: 18,
   },
   emptyTitle: {
     fontSize: 32,
-    marginBottom: 16
+    marginBottom: 16,
   },
   emptySubtitle: {
     fontSize: 18,
-    fontStyle: 'italic'
-  }
+    fontStyle: "italic",
+  },
 });
 
 export default ImageList;

@@ -5,33 +5,33 @@ import {
   View,
   Button,
   Alert,
+  Pressable,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { StatusBar } from "expo-status-bar";
-import { listFiles, uploadToFirebase,fbStorage,listAll,ref,getDownloadURL } from "../../firebase-config";
+import {
+  listFiles,
+  uploadToFirebase,
+  fbStorage,
+  listAll,
+  ref,
+  getDownloadURL,
+} from "../../firebase-config";
 import { useState, useEffect } from "react";
 import MyFilesList from "../../MyList";
 import MyFilesListV2 from "./MyFilesListV2";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function CameraScreens() {
   const [permission, requestPermission] = ImagePicker.useCameraPermissions();
   const [files, setFiles] = useState([]);
-   const [imageUrls, setImageUrls] = useState([]);
-
-  // useEffect(() => {
-  //   listFiles().then((listResp) => {
-  //     const files = listResp.map((value) => {
-  //       return { name: value.fullPath };
-  //     });
-  //     setFiles(files);
-  //   });
-  // }, []);
-
+  const [imageUrls, setImageUrls] = useState([]);
 
   useEffect(() => {
     // Lấy danh sách các ảnh từ Firebase Storage
     async function fetchImageUrls() {
-      const imageRefs = await listAll(ref(fbStorage, 'images'));
+      const imageRefs = await listAll(ref(fbStorage, "images"));
       const urls = await Promise.all(
         imageRefs.items.map(async (itemRef) => {
           const url = await getDownloadURL(itemRef);
@@ -59,7 +59,7 @@ export default function CameraScreens() {
           console.log(v)
         );
 
-        const imageRefs = await listAll(ref(fbStorage, 'images'));
+        const imageRefs = await listAll(ref(fbStorage, "images"));
         const urls = await Promise.all(
           imageRefs.items.map(async (itemRef) => {
             const url = await getDownloadURL(itemRef);
@@ -67,19 +67,17 @@ export default function CameraScreens() {
           })
         );
         setImageUrls(urls);
-
       }
     } catch (e) {
-      Alert.alert("Error Uploading Image " + e.message);
+      //Alert.alert("Error Uploading Image " + e.message);
     }
   };
 
-  ///Permission
+  //Permission
   if (permission?.status !== ImagePicker.PermissionStatus.GRANTED) {
     return (
       <View style={styles.container}>
         <Text>Permission Not granted - {permission?.status}</Text>
-        <StatusBar style="auto" />
         <Button title="Request Permission" onPress={requestPermission}></Button>
       </View>
     );
@@ -88,9 +86,9 @@ export default function CameraScreens() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        {/* <Text>Upload IMG to FireBase</Text> */}
-        {/* <MyFilesList files={files} /> */}
-        <Button title="Camera" onPress={takePhoto}></Button>
+        <Pressable style={styles.button} onPress={takePhoto}>
+          <Ionicons name="md-camera" size={32} color="white" />
+        </Pressable>
         <MyFilesListV2 imageUrls={imageUrls} />
       </View>
     </SafeAreaView>
@@ -101,5 +99,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "fff",
+  },
+  button: {
+    width: 70,
+    height: 70,
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: 740,
+    left: 180,
+    zIndex: 1,
+    backgroundColor: "black",
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
   },
 });
