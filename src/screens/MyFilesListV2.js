@@ -1,48 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, FlatList } from 'react-native';
-import { FIRE_BASE_API_KEY, FIRE_BASE_STORAGE_BUCKET, FIRE_BASE_APP_ID, FIRE_BASE_PROJECT_ID, FIRE_BASE_AUTH_DOMAIN } from "@env"
-import { initializeApp, getApp, getApps } from 'firebase/app';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL,listAll } from "firebase/storage";
-import { Alert} from 'react-native';
-// Initialize Firebase
-const firebaseConfig = {
-  apiKey: FIRE_BASE_API_KEY,
-  storageBucket: FIRE_BASE_STORAGE_BUCKET,
-  appId: FIRE_BASE_APP_ID,
-  projectId: FIRE_BASE_PROJECT_ID,
-  authDomain: FIRE_BASE_AUTH_DOMAIN,
-};
-
-
-if (getApps().length === 0) {
-  initializeApp(firebaseConfig);
-}
-
-const fbApp = getApp();
-const fbStorage = getStorage();
+import {
+  StyleSheet,
+  Button,
+  FlatList,
+  SafeAreaView,
+  Text,
+  View,
+  Image,
+  Avatar
+} from 'react-native';
+import { ListItem, Divider } from 'react-native-elements';
 
 function ImageList({ imageUrls }) {
-  //const [imageUrls, setImageUrls] = useState([]);
-
-  // useEffect(() => {
-  //   // Khởi tạo Firebase Storage
-  //   const storage = getStorage();
-
-  //   // Lấy danh sách các ảnh từ Firebase Storage
-  //   async function fetchImageUrls() {
-  //     const imageRefs = await listAll(ref(storage, 'images'));
-  //     const urls = await Promise.all(
-  //       imageRefs.items.map(async (itemRef) => {
-  //         const url = await getDownloadURL(itemRef);
-  //         return url;
-  //       })
-  //     );
-  //     setImageUrls(urls);
-  //   }
-
-  //   fetchImageUrls();
-  // }, []);
-
   return (
     <View>
       <FlatList
@@ -58,5 +27,34 @@ function ImageList({ imageUrls }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  listItem: {
+    marginTop: 8,
+    marginBottom: 8
+  },
+  textContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  titleStyle: {
+    fontSize: 30
+  },
+  subtitleStyle: {
+    fontSize: 18
+  },
+  emptyTitle: {
+    fontSize: 32,
+    marginBottom: 16
+  },
+  emptySubtitle: {
+    fontSize: 18,
+    fontStyle: 'italic'
+  }
+});
 
 export default ImageList;

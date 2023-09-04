@@ -32,7 +32,6 @@ export default function CameraScreens() {
     // Lấy danh sách các ảnh từ Firebase Storage
     async function fetchImageUrls() {
       const imageRefs = await listAll(ref(fbStorage, 'images'));
-      console.log(imageRefs);
       const urls = await Promise.all(
         imageRefs.items.map(async (itemRef) => {
           const url = await getDownloadURL(itemRef);
@@ -60,13 +59,15 @@ export default function CameraScreens() {
           console.log(v)
         );
 
-        listFiles().then((listResp) => {
-          const files = listResp.map((value) => {
-            return { name: value.fullPath };
-          });
+        const imageRefs = await listAll(ref(fbStorage, 'images'));
+        const urls = await Promise.all(
+          imageRefs.items.map(async (itemRef) => {
+            const url = await getDownloadURL(itemRef);
+            return url;
+          })
+        );
+        setImageUrls(urls);
 
-          setFiles(files);
-        });
       }
     } catch (e) {
       Alert.alert("Error Uploading Image " + e.message);
@@ -89,9 +90,8 @@ export default function CameraScreens() {
       <View style={styles.container}>
         {/* <Text>Upload IMG to FireBase</Text> */}
         {/* <MyFilesList files={files} /> */}
-        <MyFilesListV2 imageUrls={imageUrls} />
-        <StatusBar style="auto" />
         <Button title="Camera" onPress={takePhoto}></Button>
+        <MyFilesListV2 imageUrls={imageUrls} />
       </View>
     </SafeAreaView>
   );
