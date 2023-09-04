@@ -7,7 +7,7 @@ function ImageList({ imageUrls }) {
     <View>
       <FlatList
         data={imageUrls}
-        keyExtractor={(item, index) => index.toString()}
+        keyE  xtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <Image
             style={{ width: 400, height: 400, margin: 10 }}

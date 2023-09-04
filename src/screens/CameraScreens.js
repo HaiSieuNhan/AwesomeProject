@@ -6,6 +6,8 @@ import {
   Button,
   Alert,
   Pressable,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -21,12 +23,12 @@ import MyFilesList from "../../MyList";
 import MyFilesListV2 from "./MyFilesListV2";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import Ionicons from '@expo/vector-icons/Ionicons';
-
+import Ionicons from "@expo/vector-icons/Ionicons";
 export default function CameraScreens() {
   const [permission, requestPermission] = ImagePicker.useCameraPermissions();
   const [files, setFiles] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     // Lấy danh sách các ảnh từ Firebase Storage
@@ -52,6 +54,7 @@ export default function CameraScreens() {
         quality: 1,
       });
 
+        console.log(cameraResp);
       if (!cameraResp.canceled) {
         const { uri } = cameraResp.assets[0];
         const fileName = uri.split("/").pop();
@@ -83,13 +86,44 @@ export default function CameraScreens() {
     );
   }
 
+  const handleRefresh = () => {
+    // Đặt trạng thái là 'đang làm mới'
+    setIsRefreshing(true);
+
+    async function fetchImageUrls() {
+      const imageRefs = await listAll(ref(fbStorage, "images"));
+      const urls = await Promise.all(
+        imageRefs.items.map(async (itemRef) => {
+          const url = await getDownloadURL(itemRef);
+          return url;
+        })
+      );
+      setImageUrls(urls);
+    }
+
+    fetchImageUrls();
+
+    // Khi hoàn thành, đặt trạng thái là 'đã làm mới xong'
+    setIsRefreshing(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         <Pressable style={styles.button} onPress={takePhoto}>
           <Ionicons name="md-camera" size={32} color="white" />
         </Pressable>
-        <MyFilesListV2 imageUrls={imageUrls} />
+        <ScrollView
+          refreshControl={
+            // Sử dụng prop refreshControl để bật chức năng kéo để làm mới
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+            />
+          }
+        >
+          <MyFilesListV2 imageUrls={imageUrls} />
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -107,8 +141,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    top: 740,
-    left: 180,
+    right: 35,
+    bottom:30,
     zIndex: 1,
     backgroundColor: "black",
   },
